@@ -1,9 +1,9 @@
-Define LibPub append(a,b)=
+Define LibPub append(x,y)=
 Func
 :©concatenates lists
-:Local c
-:a:=string(a)
-:b:=string(b)
-:c:=mid(a,1,dim(a)-1)&","&mid(b,2,dim(b)-1)
-:Return expr(c)
+:Local z
+:x:=string(x)
+:x:=string(y)
+:z:=mid(x,1,dim(x)-1)&","&mid(y,2,dim(y)-1)
+:Return expr(z)
 :EndFunc
