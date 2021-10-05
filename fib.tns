@@ -1,12 +1,12 @@
 Define LibPub fib()=
 Prgm
-:Local a,b,t
-:a:=0
-:b:=1
+:Local x,y,z
+:x:=0
+:y:=1
 :While 1=1
-:  t:=b
-:  b:=a
-:  a:=t+b
-:  Disp a
+:  x:=y
+:  y:=x
+:  x:=z+y
+:  Disp x
 :EndWhile
 :EndPrgm
