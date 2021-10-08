@@ -169,4 +169,165 @@ function on.paint(gc)
 	end
 
 end
+function on.timer()
+	timerCount = timerCount + 1		-- increments the timerCount.
+	if timerCount == timerSpeed then	-- when the timerCount has reached the limit set by timerSpeed
+		timerCount = 0
+		timer.stop()
+		--resets timerCount, stops timer
 
+		platform.window:invalidate()	-- repaints
+	end
+
+end
+
+
+function newGame()
+
+	math.randomseed( timer.getMilliSecCounter() )	-- seeds the random number generator
+	
+	snakeDir = "w"
+
+	snakeX = { 17, 18, 19 }
+
+	snakeY = { 15, 15, 15 }
+	
+	score = 0
+	gameOver = false
+	
+	getNewTarget()
+end
+
+function getNewTarget()
+	targetX = math.random(17) + 1	-- For both X and Y, the values are from 1 to 18 out of 0 to 19
+	targetY = math.random(17) + 1
+end
+
+function moveSnake()	
+	for i = 3, # snakeX, 1 do	-- checks to see if snake has collided with itself.
+		if snakeX[i] == snakeX[1] and snakeY[i] == snakeY[1] then	-- if the current snake location is listed twice
+			gameOver = true	-- GAME OVER
+			return
+		end
+	end
+	
+	if snakeDir == "n" then
+		if snakeY[1] - 1 > -1 then	-- checks to see if snake is out of bounds
+			table.insert(snakeX, 1, snakeX[1])	-- inserts current snakeX value
+			table.insert(snakeY, 1, snakeY[1] - 1)	-- inserts new snakeY value
+		else
+			gameOver = true
+			return
+		end
+		
+	elseif snakeDir == "e" then
+		if snakeX[1] + 1 < 20 then	-- checks to see if snake is out of bounds
+			table.insert(snakeX, 1, snakeX[1] + 1)	-- inserts new snakeX value
+			table.insert(snakeY, 1, snakeY[1])	-- inserts current snakeY value
+		else
+			gameOver = true
+			return
+		end
+		
+	elseif snakeDir == "s" then
+		if snakeY[1] + 1 < 20 then	-- checks to see if snake is out of bounds
+			table.insert(snakeX, 1, snakeX[1])	-- inserts current snakeX value
+			table.insert(snakeY, 1, snakeY[1] + 1)	-- inserts new snakeY value
+		else
+			gameOver = true
+			return
+		end
+		
+	elseif snakeDir == "w" then
+		if snakeX[1] - 1 > -1 then	-- checks to see if snake is out of bounds
+			table.insert(snakeX, 1, snakeX[1] - 1)	-- inserts new snakeX value
+			table.insert(snakeY, 1, snakeY[1])	-- inserts current snakeY value
+		else
+			gameOver = true
+			return
+		end
+	end
+	
+	table.remove(snakeX, # snakeX)
+	table.remove(snakeY, # snakeY)
+end
+
+function on.charIn(ch)
+	if ch == "8" then
+		on.arrowUp()
+	elseif ch == "2" or ch == "5" then
+		on.arrowDown()
+	elseif ch == "4" then
+		on.arrowLeft()
+	elseif ch == "6" then
+		on.arrowRight()
+	end
+end
+
+function on.enterKey()	-- disables splashscreen, sets the mode to GAME, sets the initial values, and repaints.
+
+	if gameOver then
+		
+		titles = true
+		game = false
+		gameOver = false
+		
+	else
+
+		titles = false
+
+		game = true
+
+		newGame()
+		platform.window:invalidate()
+	
+	end
+
+end
+
+function on.arrowLeft()
+	if ( snakeDir == "n" or snakeDir == "s" ) and keyDisabler == false then
+		snakeDir = "w"
+		keyDisabler = true
+	end
+end
+
+function on.arrowRight()
+	if ( snakeDir == "n" or snakeDir == "s" ) and keyDisabler == false then
+		snakeDir = "e"
+		keyDisabler = true
+	end
+end
+
+function on.arrowUp()
+	if ( snakeDir == "e" or snakeDir == "w" ) and keyDisabler == false then
+		snakeDir = "n"
+		keyDisabler = true
+	end
+end
+
+function on.arrowDown()
+	if ( snakeDir == "e" or snakeDir == "w" ) and keyDisabler == false then
+		snakeDir = "s"
+		keyDisabler = true
+	end
+end
+
+function on.tabKey()			-- switches between Easy and Hard while in the splashscreen
+	if game == false then
+		if timerSpeed == 12 then
+			timerSpeed = 6	-- sets to hard
+		else
+			timerSpeed = 12	-- sets to easy
+		end
+		platform.window:invalidate()	-- repaints in order to notify user of change
+	end
+end
+
+function on.mouseDown(x,y)
+	if (x >= easyX and x <= easyX + easyW and y >= easyY and y <= easyY + easyH) or (x >= hardX and x <= hardX + hardW and y >= hardY and y <= hardY + hardH) then
+		on.tabKey()
+	elseif x >= playX and x <= playX + playW and y >= playY and y <= playY + playH then
+		on.enterKey()
+	end
+end
