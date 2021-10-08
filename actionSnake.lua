@@ -98,3 +98,75 @@ function on.paint(gc)
 		-- draws the titles
 
 	end
+	
+	
+	if game then	-- if the game is being played
+		gc:drawRect(-1, -1, 301, 201)
+		gc:setFont("sansserif", "r", 7)
+		gc:drawString(score, 302, 100, "middle")
+		if timerSpeed == 6 then
+			gc:drawString("/" .. highScore1, 302, 115, "middle")
+		else
+			gc:drawString("/" .. highScore2, 302, 115, "middle")
+		end
+		gc:drawString("ActionSnake 2.0 is a game by Karl Noss. Visit KarlNoss.com", 0, 198, "top")
+		
+		if gameOver then	-- if gameOver has been triggered
+			gc:setFont("sansserif", "b", 20)
+			gc:drawString("GAME OVER", 30, 40, "bottom")	-- draws GAME OVER
+			
+			if timerSpeed == 6 then
+				if score > highScore1 then
+					highScore1 = score
+					gc:drawString("New hard high", 30, 80, "bottom")
+					gc:drawString("score of " .. score .. "!", 30, 120, "bottom")
+					document.markChanged()
+				end
+			else
+				if score > highScore2 then
+					highScore2 = score
+					gc:drawString("New easy high", 30, 80, "bottom")
+					gc:drawString("score of " .. score .. "!", 30, 120, "bottom")
+					document.markChanged()
+				end
+			end
+			return
+		end
+		
+		--[[gc:drawString("snakeX[1]: " .. snakeX[1], 10, 10, "bottom")
+		gc:drawString("snakeY[1]: " .. snakeY[1], 10, 25, "bottom")
+		gc:drawString("targetX: " .. targetX, 10, 40, "bottom")
+		gc:drawString("targetY: " .. targetY, 10, 55, "bottom")
+		gc:drawString("score: " .. score, 10, 70, "bottom")
+		gc:drawString("# snakeX: " .. # snakeX, 10, 85, "bottom")
+		gc:drawString("# snakeY: " .. # snakeY, 10, 100, "bottom")--]]
+		-- debuging strings	
+
+		moveSnake()	-- moves the snakes position. Triggers a gameOver if snake hits itself or goes out of bounds
+		
+		gc:drawImage(target, (targetX) * 15, (targetY) * 10)	-- draws the target on screen, using the previously created locations
+				
+		-- checking to see if snake == target
+		for i = 1, # snakeX, 1 do
+				if snakeX[i] == targetX and snakeY[i] == targetY then	-- if the selected portion of the snake matches the target
+					if i == 1 then							-- if this was not an accidental score
+						score = score + 1					-- increments user's score
+						table.insert(snakeX, 1, targetX)	-- adds target location to the start of the snake
+						table.insert(snakeY, 1, targetY)
+					end
+					getNewTarget()	-- gets a new target for next time. Next time the snake moves, it will check against
+				end
+		end
+
+		for i = 1, # snakeX, 1 do	-- draws the snake on the screen using the moveSnake() locations added during this call to on.paint().
+									-- If gameOver is on, snake still is drawn this time—but not the next.
+			gc:drawImage(snaketile, snakeX[i] * 15, snakeY[i] * 10)
+		end
+		
+	timer.start(0.01)
+	-- starts timer going for next time.
+
+	end
+
+end
+
