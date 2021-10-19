@@ -34,4 +34,4 @@ Feel free to modify and distribute this code. In fact, please do so, as I might 
 
 Credits:
 --------
-Many thanks to critor for letting me use some of the file browsing code from mViewer.
+Many thanks to creator for letting me use some of the file browsing code from mViewer.
