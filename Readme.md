@@ -1,4 +1,5 @@
-Hi you can find the tinspire games here
+# TinspirePrograms
 
-They can be run on both the desktop software and the calculator
-Enjoy!
+.tns Projects will be in this repository.
+
+These are the tests Projects on my Tinspire Cx II Calculator.
